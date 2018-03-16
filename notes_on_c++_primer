@@ -227,29 +227,124 @@ and given an initial value of 0. Each call increments ctr and returns its new va
      These three elements—the return type, function name, and parameter types—describe
 the function’s interface.
 
+43.  We can pass either a const or a nonconst object to a parameter that has a top-level const:
+	void fcn(const int i) { /* fcn can read but not write to i */ }
+
+     We can call fcn passing it either a const int or a plain int. The fact that top-level consts are ignored on a parameter has one possibly surprising implication:
+	void fcn(const int i) { /* fcn can read but not write to i */ }	
+	void fcn(int i)  // error: redefines fcn(int)
+
+44.  In C++, we can define several different functions that have the same name. However, we can do so only if their parameter lists are sufficiently different. Because top-level consts are ignored, we can pass exactly the same types to either version of fcn. The second version of fcn is an error. Despite appearances, its parameter list doesn’t differ from the list in the first version of fcn.
+
+45.  We can initialize an object with a low-level const from a nonconst object but not vice versa, and a plain reference must be initialized from an object of the same type.
+	
+	int i = 42;
+	const int *cp = &i; // ok: but cp can't change i (§ 2.4.2 (p. 62))
+	const int &r = i;   // ok: but r can't change i (§ 2.4.1 (p. 61))
+	const int &r2 = 42; // ok: (§ 2.4.1 (p. 61))
+	int *p = cp;  // error: types of p and cp don't match (§ 2.4.2 (p. 62))
+	int &r3 = r;  // error: types of r3 and r don't match (§ 2.4.1 (p. 61))
+	int &r4 = 42; // error: can't initialize a plain reference from a literal (§ 2.3.1)
+
+46.  Array Parameters:
+     // despite appearances, these three declarations of print are equivalent
+     // each function has a single parameter of type const int*
+	void print(const int*);
+	void print(const int[]);   // shows the intent that the function takes an array
+	void print(const int[10]); // dimension for documentation purposes (at best)
+
+	int i = 0, j[2] = {0, 1};
+	print(&i); // ok: &i is int*
+	print(j);  // ok: j is converted to an int* that points to j[0]
+    If we pass an array to print, that argument is automatically converted to a pointer to the first element in the array; the size of the array is irrelevant.
+
+47.  Using a Marker to Specify the Extent of an Array:
+     C-style strings are stored in character arrays in which the last character of the string is followed by a null character. Functions that deal with C-style strings stop processing the array when they see a null character:
+	void print(const char *cp)
+	{
+ 	   if (cp)          // if cp is not a null pointer
+   	     while (*cp)  // so long as the character it points to is not a null character
+  	          cout << *cp++; // print the character and advance the pointer
+	}
 
 
+     Using the Standard Library Conventions:
+	pass pointers to the first and one past the last element in the array.
+	void print(const int *beg, const int *end)
+	{
+ 	   // print every element starting at beg up to but not including end
+   	 while (beg != end)
+   	     cout << *beg++ << endl; // print the current element
+        	                     // and advance the pointer
+	}
 
+	int j[2] = {0, 1};
+	// j is converted to a pointer to the first element in j
+	// the second argument is a pointer to one past the end of j
+	print(begin(j), end(j)); // begin and end functions, see note 22 ;
 
+48.  Array Reference Parameters
+     // ok: parameter is a reference to an array; the dimension is part of the type
+	void print(int (&arr)[10])
+	{
+	    for (auto elem : arr)
+ 	       cout << elem << endl;
+	}
 
+    The parentheses around &arr are necessary.
+    f(int &arr[10])   // error: declares arr as an array of references
+    f(int (&arr)[10]) // ok: arr is a reference to an array of ten ints
 
+49.     int main(int argc, char *argv[]) { ... }
+     The second parameter, argv, is an array of pointers to C-style character strings. The first parameter, argc, passes the number of strings in that array. Because the second parameter is anint main(int argc, char **argv) { ... } array, we might alternatively define main as
+	int main(int argc, char **argv) { ... } 
+       // indicating that argv points to a char*. 　　　argv是一个指针数组．
 
+50.  Functions with Varying Parameters( unknown number of parameters)
+     The new standard provides two primary ways to write a function that takes a varying number of arguments: If all the arguments have the same type, we can pass a library type named initializer_list. Like a vector, initializer_list is a template type.When we define an initializer_list, we must specify the type of the elements.
+	initializer_list<string> ls; // initializer_list of strings
+	initializer_list<int> li;    // initializer_list of ints	
 
+If the argument types vary, we can write a special kind of function, known as a variadic template.
 
+51.  Returning a Pointer to an Array:
+     
+	typedef int arrT[10];  // arrT is a synonym for the type array of ten ints
+	using arrtT = int[10]; // equivalent declaration of arrT; see § 2.5.1 (p. 68)
+	arrT* func(int i);     // func returns a pointer to an array of five ints
+     Here arrT is a synonym for an array of ten ints. Because we cannot return an array, we define the return type as a pointer to this type. Thus, func is a function that takes a single int argument and returns a pointer to an array of ten ints.
+     
+52.   To declare func without using a type alias, we must remember that the dimension of an array follows the name being defined:
+	int arr[10];          // arr is an array of ten ints
+	int *p1[10];          // p1 is an array of ten pointers
+	int (*p2)[10] = &arr; // p2 points to an array of ten ints
 
+53.  if we want to define a function that returns a pointer to an array, the dimension must follow the function’s name. However, a function includes a parameter list, which also follows the name. The parameter list precedes the dimension.
 
+	Type (*function(parameter_list))[dimension]
 
+    Type is the type of the elements and dimension isthe size of the array. The parentheses around (* function ( parameter_list )) are necessary for the same reason that they were required when we defined p2. Without them, we would be defining a function that returns an array of pointers.
 
+    As a concrete example, the following declares func without using a type alias:
+ 
+	int (*func(int i))[10];
+ 
+    To understand this declaration, it can be helpful to think about it as follows:
+ 
+	• func(int) says that we can call func with an int argument.
+ 
+	• (*func(int)) says we can dereference the result of that call.
+ 
+	• (*func(int))[10] says that dereferencing the result of a call to func yields an array of size ten.
 
+	• int (*func(int))[10] says the element type in that array is int.
 
+54.  Under the new standard, another way to simplify the declaration of func is by using a trailing return type. Trailing returns can be defined for any function, but are most useful for functions with complicated return types, such as pointers (or references) to arrays. A trailing return type follows the parameter list and is preceded by ->. To signal that the return follows the parameter list, we use auto where the return type ordinarily appears:
 
+	// fcn takes an int argument and returns a pointer to an array of ten ints
+	auto func(int i) -> int(*)[10];
 
-
-
-
-
-
-
+     Because the return type comes after the parameter list, it is easier to see that func returns a pointer and that that pointer points to an array of ten ints.
 
 
 
