@@ -82,3 +82,73 @@ ___________________
 The **compiler processes classes** in **two steps**— the member declarations are compiled first, after which the member function bodies, if any, are processed.
 ___________________
 
+#### Defining a Member Function outside the Class
+When define a member function outside the class body, the member’s definition must match its declaration.
+
+The name of a member defined outside the class must include the name of the class of which it is a member:
+```
+	double Sales_data::avg_price() const {
+	    if (units_sold)
+	        return revenue/units_sold;
+	    else
+	        return 0;
+}
+```
+#### Defining a Function to Return “This” Object
+```
+	Sales_data& Sales_data::combine(const Sales_data &rhs)
+	{
+	    units_sold += rhs.units_sold; // add the members of rhs into
+	    revenue += rhs.revenue;       // the members of ''this'' object
+	    return *this; // return the object on which the function was called
+	}
+	....
+	total.combine(trans); // update the running total
+```
+Here the return statement dereferences this to obtain the object on which the function is executing. That is, for the call above, we return a reference to total.
+
+### Defining Nonmember Class-Related Functions
+> Ordinarily, nonmember functions that are part of the interface of a class should be declared in the same header as the class itself.
+```
+// input transactions contain ISBN, number of copies sold, and sales price
+	istream &read(istream &is, Sales_data &item)
+	{
+	    double price = 0;
+	    is >> item.bookNo >> item.units_sold >> price;
+	    item.revenue = price * item.units_sold;
+	    return is;
+	}
+	ostream &print(ostream &os, const Sales_data &item)
+	{
+	    os << item.isbn() << " " << item.units_sold << " "
+	       << item.revenue << " " << item.avg_price();
+	    return os;
+	}
+```
+First, both read and write take a reference to their respective IO class types.  **The IO classes are types that cannot be copied, so we may only pass them by reference.**
+
+The second thing to note is that print does not print a newline. Ordinarily, **functions that do output should do minimal formatting**.
+
+### Constructors
+The job of a constructor is to initialize the data members of a class object. A constructor is run whenever an object of a class type is created.
+
+1\.  **Constructors** have **no return type**.
+2\. Constructors have a (possibly empty) parameter list and a (possibly empty) function body.
+3\. **A class** can have **multiple constructors**.
+4\.Like any other **overloaded function** (§ 6.4, p. 230), the **constructors** must **differ ** from each other in the number or types of their parameters.
+_________________________________
+When we create a const object of a class type, the object does not assume its “constness” until after the constructor completes the object’s initialization. Thus, constructors can write to const objects during their construction.>
+_________________________________
+
+If our class **does not explicitly define** any constructors, **the compiler will implicitly define** the **default constructor**.
+
+The compiler-generated constructor is known as the synthesized default constructor. For most classes, this synthesized constructor initializes each data member of the class as follows: 
+	• If there is an in-class initializer (§ 2.6.1, p. 73), use it to initialize the member. 
+	• Otherwise, default-initialize (§ 2.2.1, p. 43) the member.
+
+#### What = default Means
+Constructor:  An empty parameter list (i.e., the default constructor)
+```
+	Sales_data() = default;
+```
+Under the new standard, if we want the default behavior, we can ask the compiler to generate the constructor for us by writing **= default** after the parameter list.
