@@ -21,30 +21,30 @@ or in command line,  add \" -std=c++11 \"
 
 5\. To use a **vector**, we must include the appropriate header.
 ```
-	#include \<vector>
+	#include <vector>
 	using std::vector;
 ```
 6\. In the past, we had to supply a space between the closing angle bracket of the outer vector and its element type  vector<vector<int> > rather than vector<vector<int>>.
 
 7\. 
 ```
-	vector\<int> v1(10);  // v1 has ten elements with value 0
+	vector<int> v1(10);  // v1 has ten elements with value 0
 
-	vector\<int> v2{10};  // v2 has one element  with value 10
+	vector<int> v2{10};  // v2 has one element  with value 10
 
-	vector\<int> v3(10, 1); // v3 has ten elements with value 1
+	vector<int> v3(10, 1); // v3 has ten elements with value 1
 
-	vecto\<int> v4{10, 1}; // v4 has two elements with values 10 and 1
+	vecto<int> v4{10, 1}; // v4 has two elements with values 10 and 1
 
-	vector\<string> svec(10); // ten elements, each an empty string
+	vector<string> svec(10); // ten elements, each an empty string
 
-	vector\<string> v5{"hi"}; // list initialization: v5 has one element
+	vector<string> v5{"hi"}; // list initialization: v5 has one element
 
 	vector<string> v6("hi"); // error: can't construct a vector from a string literal
 
-	vector\<string> v7{10};  // v7 has ten default-initialized elements
+	vector<string> v7{10};  // v7 has ten default-initialized elements
 
-	vector\<string> v8{10, "hi"}; // v8 has ten elements with value "hi"
+	vector<string> v8{10, "hi"}; // v8 has ten elements with value "hi"
 ```
 8\.  **short-cut for end-of-file :  ctrl + D**
 
@@ -119,7 +119,7 @@ int *(&arry)[10] = ptrs;  //  arry is a reference to an array of ten pointers
 ```
 	using std::begin; using std::end;
 
-	int ia\[\] = {0,1,2,3,4,5,6,7,8,9}; // ia is an array of ten ints
+	int ia[] = {0,1,2,3,4,5,6,7,8,9}; // ia is an array of ten ints
 
 	int *beg = begin(ia); // pointer to the first element in ia
 
@@ -241,7 +241,7 @@ Following the try block is a list of one or more catch clauses. A catch consists
 	...  
 	int divideWith = 0; // convert our input string to number - C++ style  
 	stringstream s;  
-	s << argv\[2\];  
+	s << argv[2];  
 	s >> divideWith;  
   ```
 4\.  A parameter list typically consists of a comma-separated list of parameters, each of   which looks like a declaration with a single declarator. Even when the types of two  parameters are the same, the type must be repeated:  
