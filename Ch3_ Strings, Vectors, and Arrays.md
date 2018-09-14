@@ -5,8 +5,8 @@
 ### 3.2 Library string Type
 1\.  defining and initializing strings
 ```
-	string s1; 				// default initialization; s1 is the empty string
-	string s2 = s1; 		// s2 is a copy of s1
+	string s1; 		// default initialization; s1 is the empty string
+	string s2 = s1; 	// s2 is a copy of s1
 	string s3 = "hiya"; 	// s3 is a copy of the string literal
 	string s4(10, 'c'); 	// s4 is cccccccccc
 ```
@@ -15,17 +15,17 @@ Initializing without '=' : direct initialize
 
 2\.  Some common operations:
 ```
-	s.empty()				s.size()
+	s.empty()			s.size()
 	getline(is, s)			s[n]
 ```
 3\.  size returns a **string::size_type** value. This type is unsigned. Under the new standard, we can ask the compiler to provide the appropriate type by using **auto** or **decltype**:
 ```
-	auto len = line.size(); 		 // len has type string::size_type
+	auto len = line.size(); 	 // len has type string::size_type
 ```
 4\. Adding Literals and strings
 **When mix strings and string or character literals**, at least one operand to each \+ operator must be of string type:
 ```
-	string s4 = s1 + ", ";			 // ok: adding a string and a literal
+	string  s4 = s1 + ", ";		 // ok: adding a string and a literal
 	string s5 = "hello" + ", "; 	 // error: no string operand
 	string s6 = s1 + ", " + "world"; // ok: each + has a string operand
 	string s7 = "hello" + ", " + s2; // error: can't add string literals
@@ -44,8 +44,8 @@ some cctype functions
 ```
 6\.  To access every character in a string, we can use the **range for** statement:
 ```
-	for(auto c : str)				for(auto &c : str) // value of c can be changed
-		//......						//......
+	for(auto c : str)			for(auto &c : str) // value of c can be changed
+		//......				//......
 ```
 When compiling with g++ in ubuntu, there might be a warning:
 >warning:  range-based ‘for’ loops only available with -std=c++11 or -std=gnu++11. 
@@ -90,7 +90,7 @@ or in command line,  add \" -std=c++11 \"
 
 5\. The subscript operator [] on **vector (and string)** fetches an existing element; it does not add an element.  **To add an element, use V.push_back(x)**
 ```
-	vector<int> ivec;  // empty vector
+	vector<int> ivec;  	// empty vector
 	for (size_t ix = 0; ix != 10; ++ix)
 		ivec[ix] = ix;  // disaster: ivec has no elements
 _________________________________________________________________________
@@ -103,10 +103,10 @@ _________________________________________________________________________
 6\.  common operations for vector
 ```
 	v.empty()	v.size() 		v.capacity()    v.clear()	
-	v.resize(size_type n)		v.reserve(size_type n)		
+	v.resize(size_type n)			v.reserve(size_type n)		
 	v.erase(itr pos)			v.erase(itr first, itr last) 
 	v.begin()	v.end()		// return iterator:
-	v.front()   v.back()	// return reference:   
+	v.front()   v.back()		// return reference:   
 	v.pop_back()				v.push_back()	 
 	v.swap(vector& x)
 ```
@@ -126,10 +126,10 @@ If the container is empty, begin returns the same iterator as the one returned b
 
 10\.  Iterator definitions in string and vector :
 ```
-	vector<int>::iterator it; // it can read and write vector<int> elements
-	string::iterator it2;  // it2 can read and write characters in a string
+	vector<int>::iterator it; 	// it can read and write vector<int> elements
+	string::iterator it2;  		// it2 can read and write characters in a string
 	vector<int>::const_iterator it3; // it3 can read but not write elements
-	string::const_iterator it4;  // it4 can read but not write characters
+	string::const_iterator it4; 	 // it4 can read but not write characters
 ```
 11\. The library defines several other kinds of containers. **All of the library containers have iterators, but only a  few of them support the subscript operator.**  Technically speaking, **a string is not a container type**, but string supports many of the container operations. As we’ve seen string, like vector has a subscript operator. Like vectors, strings also have iterators.
 
@@ -146,9 +146,9 @@ If the container is empty, begin returns the same iterator as the one returned b
 ```
 	char a2[] = {'C', '+', '+', '\0'}; // list initialization, explicit null
 
-	char a3[] = "C++";  // null terminator added automatically
+	char a3 [] = "C++"; 		 // null terminator added automatically
 
-	const char a4[6] = "Daniel";  // error: no space for the null!
+	const char a4[6] = "Daniel"; 	 // error: no space for the null!
 ```
 The dimensions of a2 and a3 are both 4. The definition of a4 is in error. Although the literal contains only six explicit characters, the array size must be at least seven—six to hold the literal and one for the null.
 
@@ -156,7 +156,7 @@ The dimensions of a2 and a3 are both 4. The definition of a4 is in error. Althou
 
 3\.  Defining **arrays that hold pointers** is fairly straightforward, **defining a pointer or reference to an array** is a bit more complicated:
 ```
-	int *ptrs[10];  		  //  ptrs is an array of ten pointers to int
+	int *ptrs[10];  	  //  ptrs is an array of ten pointers to int
 
 	int &refs[10] = /* ? */;  //  error: no arrays of references (reference has no address)
 
@@ -199,8 +199,8 @@ As a result, ivec will have six elements.
 	size_t cnt = 0;
 	for (auto &row : ia) 			 // for every element in the outer array
 		for (auto &col : row) {		 // for every element in the inner array
-			col = cnt; 				 // give this element the next value
-			++cnt; 					 // increment cnt
+			col = cnt; 		 // give this element the next value
+			++cnt; 			 // increment cnt
 		}
 ```
 3\. Pointers and Multidimensional Arrays
