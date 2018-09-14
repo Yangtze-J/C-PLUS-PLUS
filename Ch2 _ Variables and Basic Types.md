@@ -6,31 +6,31 @@
 ```
 	int a = 1, c = 2;
 	int &b = a; //ok, b is a reference to a
-	&b = c; //wrong, after initialization, b can never have '&' on its left side, so no rebind.
+	&b = c;     //wrong, after initialization, b can never have '&' on its left side, so no rebind.
 ```
 2\.  A reference is not an object. Instead, a reference is another name for an already existing object.
 
 #### Pointers
 1\. The * must be repeated for each pointer variable:
 ```
-	int *ip1, *ip2; // both ip1 and ip2 are pointers to int
+	int *ip1, *ip2;  // both ip1 and ip2 are pointers to int
 	double dp, *dp2; // dp2 is a pointer to double; dp is a double
 ```
 2\.  Because ***references are not objects, they don’t have addresses.*** Hence, we may not define a pointer to a reference.
 
 3\. We can use the dereference operator (the * operator) to access the object. Dereferencing a pointer yields the object to which the pointer points. We can assign to that object by assigning to the result of the dereference:
 ```
-	*p = 0; // * yields the object; we assign a new value to ival through p
-	cout << *p; // prints 0
+	*p = 0;         // * yields the object; we assign a new value to ival through p
+	cout << *p;     // prints 0
 ```
 ***When we assign to \*p, we are assigning to the object to which p points.***
 
 4\. There are several ways to obtain a **null pointer**:
 ```
 	int *p1 = nullptr; // equivalent to int *p1 = 0;
-	int *p2 = 0; // directly initializes p2 from the literal constant 0
+	int *p2 = 0; 	   // directly initializes p2 from the literal constant 0
 	// must #include cstdlib
-	int *p3 = NULL; // equivalent to int *p3 = 0
+	int *p3 = NULL;    // equivalent to int *p3 = 0
 ```
 ***nullptr*** is a literal that has a special type that can be converted to any other pointer type.
 ***NULL is a preprocessor variable*** which the cstdlib header defines as 0. 
@@ -39,14 +39,14 @@
 It is illegal to assign an int variable to a pointer.
 ```
 	int zero = 0;
-	pi = zero; // error: cannot assign an int to a pointer
+	pi = zero;   // error: cannot assign an int to a pointer
 ```
 5\.  **void\*  pointers**
 The type void* is a special pointer type that can hold the address of any object. Like any other pointer, a void* pointer holds an address, but the type of the object at that address is unknown:
 ```
 	double obj = 3.14, *pd = &obj;
 	// ok: void* can hold the address value of any data pointer type
-	void *pv = &obj; // obj can be an object of any type
+	void *pv = &obj;   // obj can be an object of any type
 ```
 We can assign it to another void* pointer.  **We cannot use a void\* to operate on the object it addresses**—we don’t know that object’s type
 >Generally, we use a void* pointer to deal with memory as memory, rather than using the pointer to access the object stored in that memory. 
@@ -62,7 +62,7 @@ It's better to **place the \* (or the &) with the variable name**.
 We indicate each pointer level by its own \*. That is, we write \*\*  for a pointer to a pointer, \*** for a pointer to a pointer to a pointer, and so on:
 ```
 	int ival = 1024;int *pi = &ival; 	// pi points to an int
-	int **ppi = &pi; 					// ppi points to a pointer to an int
+	int **ppi = &pi; 			// ppi points to a pointer to an int
 	// Here pi is a pointer to an int and ppi is a pointer to a pointer to an int. 
 	// ppi -> pi ->ival
 ```
@@ -71,7 +71,7 @@ A reference is not an object. Hence, we may not have a pointer to a reference. H
 ```
 	int i = 42;
 	int *p; 		// p is a pointer to int
-	int *&r = p; 	// r is a reference to the pointer p
+	int *&r = p; 	 	// r is a reference to the pointer p
 	r = &i; 		// r refers to a pointer; assigning &i to r makes p point to i
 	*r = 0; 		// dereferencing r yields i, the object to which p points; changes i to 0
 ```
@@ -96,13 +96,13 @@ A reference is not an object. Hence, we may not have a pointer to a reference. H
  **pointers to non-const  cannot point to const objects;**
 ```
 	const double pi = 3.14; 	// pi is const; its value may not be changed
-	double *ptr = &pi; 			// error: ptr is a plain pointer
+	double *ptr = &pi; 		// error: ptr is a plain pointer
 ```
   **pointers to const can point to non-const objects.**
 ```
 	const double *cptr = &pi; 
 	double dval = 3.14; 		// dval is a double; its value can be changed
-	cptr = &dval;				// ok: but can't change dval through cptr
+	cptr = &dval;			// ok: but can't change dval through cptr
 ```
 5\. A const pointer must be initialized, and once initialized, its value (i.e., the address that it holds) may not be changed. We indicate that the pointer is const by putting the const after the \*. 
 ```
@@ -118,7 +118,7 @@ For pointers, We use the term top-level const to indicate that the pointer itsel
 
 The distinction between top-level and low-level matters when we copy an object. When we copy an object, top-level consts are ignored:
 ```
-	const int ci = 42; 			// we cannot change ci; const is top-level
+	const int ci = 42; 		// we cannot change ci; const is top-level
 	const int *p2 = &ci; 		// we can change p2; const is low-level
 	const int *const p3 = p2; 	// right-most const is top-level, left-most is not
 	
@@ -129,10 +129,10 @@ On the other hand, low-level const is never ignored. When we copy an object, bot
 ```
 	int i = 0;
 	int *p = p3; 	// error: p3 has a low-level const but p doesn't
-	p2 = p3; 		// ok: p2 has the same low-level const qualification as p3
-	p2 = &i; 		// ok: we can convert int* to const int*
+	p2 = p3; 	// ok: p2 has the same low-level const qualification as p3
+	p2 = &i; 	// ok: we can convert int* to const int*
 	int &r = ci; 	// error: can't bind an ordinary int& to a const int object
-	const int &r2 = i; // ok: can bind const int& to plain int
+	const int &r2 = i;  // ok: can bind const int& to plain int
 ```
 7\.  **constexpr** : Variables declared as constexpr are implicitly const and must be initialized by constant
 expressions.
@@ -158,8 +158,8 @@ The compiler does not call f, but it uses the type that such a call would return
 ```
 	const int ci = 0, &cj = ci;
 	decltype(ci) x = 0; 	    // x has type const int
-	decltype(cj) y = x;			// y has type const int& and is bound to x
-	decltype(cj) z; 			// error: z is a reference and must be initialized
+	decltype(cj) y = x;	    // y has type const int& and is bound to x
+	decltype(cj) z; 	    // error: z is a reference and must be initialized
 ```
 Some expressions will cause decltype to yield a reference type
 ```
